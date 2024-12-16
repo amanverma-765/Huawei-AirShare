@@ -2,3 +2,5 @@
 files
 .idea
 __pycache__
+sender/files/screenshot/
+receiver/files/received/
