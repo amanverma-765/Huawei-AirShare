@@ -19,7 +19,7 @@ class NetworkFileSender:
                 if addr.family == socket.AF_INET:
                     ip = addr.address
                     netmask = addr.netmask
-                    if ip.startswith('192.168') or ip.startswith('10.') or ip.startswith('172.'):
+                    if ip.startswith('192.168.0') or ip.startswith('10.') or ip.startswith('172.'):
                         if netmask:
                             network = ipaddress.IPv4Network(f"{ip}/{netmask}", strict=False)
                             return network

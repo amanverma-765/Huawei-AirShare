@@ -4,14 +4,19 @@ import os
 import platform
 import subprocess
 
+from playsound3 import playsound
+
 
 def open_image(image_path):
+
+    abs_path = os.path.abspath(image_path)
+
     if platform.system() == 'Windows':
-        os.startfile(image_path)
+        os.startfile(abs_path)
     elif platform.system() == 'Darwin':
-        subprocess.run(['open', image_path])
+        subprocess.run(['open', abs_path])
     else:
-        subprocess.run(['xdg-open', image_path])
+        subprocess.run(['xdg-open', abs_path])
 
 
 class NetworkFileReceiver:
@@ -82,6 +87,7 @@ class NetworkFileReceiver:
 
                     print(f"[\u2713] File {filename} received successfully.")
 
+                    playsound('files/file_received_sound.mp3')
                     image_path = 'files/received/screenshot.png'
                     open_image(image_path)
 
