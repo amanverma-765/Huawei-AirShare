@@ -1,11 +1,17 @@
-import os
 import socket
 import json
+import os
+import platform
+import subprocess
 
 
-def post_process():
-
-    pass
+def open_image(image_path):
+    if platform.system() == 'Windows':
+        os.startfile(image_path)
+    elif platform.system() == 'Darwin':
+        subprocess.run(['open', image_path])
+    else:
+        subprocess.run(['xdg-open', image_path])
 
 
 class NetworkFileReceiver:
@@ -73,10 +79,11 @@ class NetworkFileReceiver:
                             remaining_bytes -= len(data)
 
                     print(f"[✓] File {filename} received successfully.")
-                    # open the received file
-                    post_process()
+
+                    image_path ='files/received/screenshot.png'
+                    open_image(image_path)
+
                     connection.close()
-                    # Stop the server after receiving the file
                     self.receiver_socket.close()
                     print("[*] Server stopped after receiving the file.")
                     return
@@ -91,20 +98,13 @@ class NetworkFileReceiver:
 
     def listen_for_requests(self):
         while True:
-            # Accept incoming connection from sender
             connection, address = self.receiver_socket.accept()
-            # Handle the connection and file transfer
             self.handle_request(connection, address)
-            # Stop the server after handling the first request
-            if self.receiver_socket.fileno() == -1:  # Check if the socket is closed
+            if self.receiver_socket.fileno() == -1:
                 break
 
 
-def main():
-    receiver = NetworkFileReceiver()
-    receiver.start_server()
-    receiver.listen_for_requests()
 
-
-if __name__ == "__main__":
-    main()
+# receiver = NetworkFileReceiver()
+# receiver.start_server()
+# receiver.listen_for_requests()

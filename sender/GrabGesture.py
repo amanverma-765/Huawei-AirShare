@@ -8,7 +8,6 @@ import time
 from sender.FileSender import NetworkFileSender
 from sender.ScreenCapture import take_screenshot
 
-
 class GrabDetector:
     def __init__(self, detection_delay=0.5):
         self.mpHands = mp.solutions.hands

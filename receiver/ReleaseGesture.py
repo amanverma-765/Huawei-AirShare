@@ -1,6 +1,11 @@
+import threading
+
 import cv2
 import mediapipe as mp
 import time
+
+from receiver.FileReceiver import NetworkFileReceiver
+
 
 class ReleaseDetector:
     def __init__(self, detection_delay=0.5):
@@ -31,6 +36,16 @@ class ReleaseDetector:
 
     def released(self):
         print("Object Released!")
+
+        receiver = NetworkFileReceiver()
+
+        def receiver_task():
+            receiver.start_server()
+            receiver.listen_for_requests()
+
+        receiver_thread = threading.Thread(target=receiver_task, daemon=True)
+        receiver_thread.start()
+
         self.last_gesture_time = time.time()
 
     def process_frame(self, frame):
