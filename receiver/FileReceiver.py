@@ -15,9 +15,10 @@ def open_image(image_path):
 
 
 class NetworkFileReceiver:
-    def __init__(self, host_ip='0.0.0.0', port=65432):
+    def __init__(self, host_ip='0.0.0.0', port=65432, timeout=15):
         self.host_ip = host_ip
         self.port = port
+        self.timeout = timeout
         self.receiver_socket = None
 
     def start_server(self):
@@ -25,6 +26,7 @@ class NetworkFileReceiver:
         self.receiver_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.receiver_socket.bind((self.host_ip, self.port))
         self.receiver_socket.listen(5)
+        self.receiver_socket.settimeout(self.timeout)
         print(f"[*] Receiver listening on {self.host_ip}:{self.port}")
 
     def handle_request(self, connection, address):
@@ -78,9 +80,9 @@ class NetworkFileReceiver:
                             f.write(data)
                             remaining_bytes -= len(data)
 
-                    print(f"[✓] File {filename} received successfully.")
+                    print(f"[\u2713] File {filename} received successfully.")
 
-                    image_path ='files/received/screenshot.png'
+                    image_path = 'files/received/screenshot.png'
                     open_image(image_path)
 
                     connection.close()
@@ -98,13 +100,18 @@ class NetworkFileReceiver:
 
     def listen_for_requests(self):
         while True:
-            connection, address = self.receiver_socket.accept()
-            self.handle_request(connection, address)
-            if self.receiver_socket.fileno() == -1:
+            try:
+                connection, address = self.receiver_socket.accept()
+                self.handle_request(connection, address)
+                if self.receiver_socket.fileno() == -1:
+                    break
+            except socket.timeout:
+                print("[*] No file received within the timeout period. Server shutting down.")
+                self.receiver_socket.close()
                 break
 
 
-
+# Example usage:
 # receiver = NetworkFileReceiver()
 # receiver.start_server()
 # receiver.listen_for_requests()
