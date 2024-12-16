@@ -2,3 +2,5 @@ opencv-python
 mediapipe
 psutil
 websockets
+mss
+playsound3

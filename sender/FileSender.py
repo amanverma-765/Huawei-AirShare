@@ -127,6 +127,6 @@ class NetworkFileSender:
 
 
 # Usage:
-file_path = '/home/ark/Pictures/Aman/photo_2024-12-05_16-33-09.jpg'
-sender = NetworkFileSender(file_path)
-sender.start_sending()
+# file_path = '/home/ark/Pictures/Aman/photo_2024-12-05_16-33-09.jpg'
+# sender = NetworkFileSender(file_path)
+# sender.start_sending()

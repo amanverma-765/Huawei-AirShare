@@ -1,6 +1,13 @@
+import os
+import threading
+
 import cv2
 import mediapipe as mp
 import time
+
+from sender.FileSender import NetworkFileSender
+from sender.ScreenCapture import take_screenshot
+
 
 class GrabDetector:
     def __init__(self, detection_delay=0.5):
@@ -31,6 +38,16 @@ class GrabDetector:
 
     def grabbed(self):
         print("Object Grabbed!")
+        os.makedirs('files/screenshot', exist_ok=True)
+
+        take_screenshot()
+        print("[*] Captured Screenshot")
+
+        file_path = 'files/screenshot/screenshot.png'
+        sender = NetworkFileSender(file_path)
+        send_thread = threading.Thread(target=sender.start_sending, daemon=True)
+        send_thread.start()
+
         self.last_gesture_time = time.time()
 
     def process_frame(self, frame):
